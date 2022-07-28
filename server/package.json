@@ -1,0 +1,15 @@
+{
+  
+  "name": "intern",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start":"json-server -p 3006 -w db.json"
+    },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^0.17.0"
+  }
+}
