@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start":"json-server -p 3006 -w db.json"
+    "start":"node index.js"
     },
   "author": "",
   "license": "ISC",
