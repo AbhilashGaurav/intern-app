@@ -4,11 +4,10 @@ import Tabs from '@mui/material/Tabs';
 import { TextField, Button } from '@mui/material';
 import Modal from '@mui/material/Modal';
 import Tab from '@mui/material/Tab';
-import { useState, useEffect } from 'react';
-import { fetchCards } from '../../redux/feature/cardSlice';
+import { useState } from 'react';
 import { createCategory } from '../../redux/feature/categorySlice';
 import { useDispatch, useSelector } from 'react-redux'
-import api from '../../api/cards'
+import { useNavigate } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -36,8 +35,8 @@ function LinkTab(props) {
 
 export default function TabBar() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const categories = useSelector((state) => state.category.categories);
-    console.log(categories);
     const [value, setValue] = useState(0);
     const [category, setCategory] = useState({
         name:""
@@ -68,7 +67,9 @@ export default function TabBar() {
             <Button onClick={handleClick}>Add Bucket</Button>
             <Tabs value={value} onChange={handleChange} aria-label="nav tabs example">
                 {categories.map((category) => (
-                    <LinkTab label={category.name} key={category.id}/>
+                    <LinkTab label={category.name} key={category.id} onClick={()=>{
+                        navigate(`/${category.name}`);
+                    }}/>
                 ))}
             </Tabs>
             <Modal

@@ -5,87 +5,75 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { createCard, fetchCards } from "../../redux/feature/cardSlice";
-import { fetchCategory } from "../../redux/feature/categorySlice";
+import { createCard, updateCard } from "../../redux/feature/cardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-function Form() {
+function Form({selectId, setSelectId}) {
   const dispatch = useDispatch();
-  const [postData, setPostData] = useState({
+  const categories = useSelector((state) => state.category.categories);
+  const [cardData, setCardData] = useState({
     title: "",
     url: "",
     category: ""
   });
-  //   const post = useSelector((state) => {
-  //     return selectedId
-  //       ? state.post.posts.find((p) => p._id === selectedId)
-  //       : null;
-  //   });
+    const card = useSelector((state) => {
+      return selectId
+        ? state.card.cards.find((p) => p.id === selectId)
+        : null;
+    });
   useEffect(() => {
-    console.log("Hello world")
-    dispatch(fetchCards());
-    dispatch(fetchCategory());
-    // console.log(fetchC());
-  }, [dispatch]);
+    console.log(card);
+    if (card) setCardData(card);
+  }, [card]);
 
   function clear() {
-    setPostData({
+    setCardData({
       title: "",
       url: "",
       category: ""
     });
-    // setSelectedId(null);
+    setSelectId(null);
   }
 
   function handleSubmit(e) {
     e.preventDefault();
     if (
-      postData.title === "" ||
-      postData.url === "" ||
-      postData.category === ""
+      cardData.title === "" ||
+      cardData.url === "" ||
+      cardData.category === ""
     ) {
       alert("All fields must be field");
       return;
     }
-    // if (selectedId) {
-    //   const obj = {
-    //     id: selectedId,
-    //     updatedPost: { ...postData, name: user?.result?.name },
-    //   };
-    //   dispatch(updatePost(obj));
-    //   clear();
-    // } else {
-    dispatch(createCard({ ...postData, id: uuidv4() }));
+    if (selectId) {
+      const obj = {
+        id: selectId,
+        updatedCard: cardData,
+      };
+      dispatch(updateCard(obj));
+      clear();
+    } else {
+    dispatch(createCard({ ...cardData, id: uuidv4() }));
     clear();
-    // }
+    }
   }
   function handleChange(e) {
     const { name, value } = e.target;
-    setPostData((prev) => {
+    setCardData((prev) => {
       return { ...prev, [name]: value };
     });
   }
 
-  //   if (!user?.result?.name) {
-  //     return (
-  //       <Paper className="paper">
-  //         <Typography variant="h6" align="center">
-  //           Please Sign In to create the post
-  //         </Typography>
-  //       </Paper>
-  //     );
-  //   }
   return (
     <Paper elevation={12} className="paper">
       <form
         autoComplete="off"
         noValidate
-        className="form"
         onSubmit={handleSubmit}
       >
         <Typography variant="h6">
-          Create a card
+          {selectId ? "Edit" : "Create"} a card
         </Typography>
         <TextField
           name="title"
@@ -93,7 +81,7 @@ function Form() {
           label="Title"
           fullWidth
           className="input"
-          value={postData.title}
+          value={cardData.title}
           onChange={handleChange}
         />
         <TextField
@@ -102,19 +90,20 @@ function Form() {
           label="Video/Audio URL"
           fullWidth
           className="input"
-          value={postData.url}
+          value={cardData.url}
           onChange={handleChange}
         />
-        <FormControl fullWidth>
+        <FormControl fullWidth className="input">
           <InputLabel>Select the category</InputLabel>
           <Select
             name="category"
-            value={postData.category}
+            value={cardData.category}
             label="Category"
             onChange={handleChange}
           >
-            <MenuItem value={"Entertainment Videos"}>Entertainment Videos</MenuItem>
-            <MenuItem value={"Education Videos"}>Education Videos</MenuItem>
+          {categories.map((category)=>(
+            <MenuItem value={category.name} key={category.id}>{category.name}</MenuItem>
+          ))}
           </Select>
         </FormControl>
         <Button
@@ -123,16 +112,15 @@ function Form() {
           size="large"
           color="primary"
           type="submit"
-          fullWidth
         >
           Submit
         </Button>
         <Button
           variant="outlined"
+          className="buttonSubmit"
           size="large"
           color="secondary"
           onClick={clear}
-          fullWidth
         >
           clear
         </Button>

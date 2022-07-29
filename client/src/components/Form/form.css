@@ -1,3 +1,10 @@
 .paper{
-    width: 100%;
+    padding: 2rem;
+    margin: 2rem 0rem 2rem 0rem;
+}
+.input{
+    margin: 1rem !important;
+}
+.buttonSubmit{
+    margin: 1rem !important;
 }
